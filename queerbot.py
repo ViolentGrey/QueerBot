@@ -1,4 +1,5 @@
 #Read token from file and parse it
+import asyncio
 import json
 token = ""
 with open("../token.json") as file:
@@ -9,9 +10,28 @@ with open("../token.json") as file:
 
 import hikari
 import logging
+import time
 logging.basicConfig(filename="../QB.log")
 
 bot = hikari.GatewayBot(token=token)
+import badStrLib
+async def egg_timer(wait_amnt: int, event):
+    now =time.time()
+    end = now + wait_amnt
+    while True:
+        time.sleep(0.5)
+        if (time.time()>=end):
+            break
+    await event.message.respond("ding!")
+
+class hard_boiled(hikari.events.base_events.Event):
+    type = ""
+    def __init__(self, type) -> None:
+        self.type = type
+
+
+
+tasks = []
 
 #the hello world of bots, ping pong
 @bot.listen()
@@ -24,5 +44,10 @@ async def ping(event: hikari.GuildMessageCreateEvent) -> None:
 
     if event.content.startswith("ping"):
         await event.message.respond("Pong!")
+    
+    if event.content.startswith("!et"):
+        inp = int(badStrLib.keep(event.content, "0123456789"), 10)
+        tasks.append(asyncio.create_task(egg_timer(inp, event)))
+        
 
 bot.run()
