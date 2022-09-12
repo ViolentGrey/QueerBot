@@ -23,7 +23,7 @@ def auth_hash(contents,password):
 #content: Dictionary containing all the content you want to transmit
 #password: the password
 #url: the url to send to
-def call_bot_worker(content, password, url):
+async def call_bot_worker(content, password, url):
     hdrs = {"content-type": "application/json"}
     auth = auth_hash(content,password)
     content["hash"]=auth
